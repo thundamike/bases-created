@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-  	<title>Table 05</title>
+  	<title>Bases Created</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -23,97 +23,14 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="table-wrap">
-						<table class="table table-responsive-xl">
-						  <thead>
+						<table class="table table-responsive-xl" id="table">
+						  <thead id="header">
 						    <tr>
 						    	<th>&nbsp;</th>
-						    	<th>Email</th>
-						      <th>Username</th>
-						      <th>Status</th>
-						      <th>&nbsp;</th>
 						    </tr>
 						  </thead>
-						  <tbody>
-						    <tr class="alert" role="alert">
-						      <td class="d-flex align-items-center">
-						      	<div class="img" style="background-image: url(images/person_1.jpg);"></div>
-						      	<div class="pl-3 email">
-						      		<span>markotto@email.com</span>
-						      		<span>Added: 01/03/2020</span>
-						      	</div>
-						      </td>
-						      <td>Markotto89</td>
-						      <td class="status"><span class="active">Active</span></td>
-						      <td>
-						      	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</button>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <td class="d-flex align-items-center">
-						      	<div class="img" style="background-image: url(images/person_2.jpg);"></div>
-						      	<div class="pl-3 email">
-						      		<span>jacobthornton@email.com</span>
-						      		<span>Added: 01/03/2020</span>
-						      	</div>
-						      </td>
-						      <td>Jacobthornton</td>
-						      <td class="status"><span class="waiting">Waiting for Resassignment</span></td>
-						      <td>
-						      	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</button>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <td class="d-flex align-items-center">
-						      	<div class="img" style="background-image: url(images/person_3.jpg);"></div>
-						      	<div class="pl-3 email">
-						      		<span>larrybird@email.com</span>
-						      		<span>Added: 01/03/2020</span>
-						      	</div>
-						      </td>
-						      <td>Larry_bird</td>
-						      <td class="status"><span class="active">Active</span></td>
-						      <td>
-						      	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</button>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <td class="d-flex align-items-center">
-						      	<div class="img" style="background-image: url(images/person_4.jpg);"></div>
-						      	<div class="pl-3 email">
-						      		<span>johndoe@email.com</span>
-						      		<span>Added: 01/03/2020</span>
-						      	</div>
-						      </td>
-						      <td>Johndoe1990</td>
-						      <td class="status"><span class="active">Active</span></td>
-						      <td>
-						      	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</button>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <td class="d-flex align-items-center border-bottom-0">
-						      	<div class="img" style="background-image: url(images/vladdyg.jpg);"></div>
-						      	<div class="pl-3 email">
-						      		<span>garybird@email.com</span>
-						      		<span>Added: 01/03/2020</span>
-						      	</div>
-						      </td>
-						      <td class="border-bottom-0">Garybird_2020</td>
-						      <td class="status border-bottom-0"><span class="waiting">Waiting for Resassignment</span></td>
-						      <td class="border-bottom-0">
-						      	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</button>
-				        	</td>
-						    </tr>
+						  <tbody id="body">
+						    
 						  </tbody>
 						</table>
 					</div>
@@ -121,6 +38,79 @@
 			</div>
 		</div>
 	</section>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			fetch('years/2023.csv')
+				.then(response => response.text())
+				.then(csvData => {
+					// Split CSV data by newline character to get rows
+					const rows = csvData.split('\n');
+					
+					// Get the table header
+					const headerRow = document.getElementById('header').getElementsByTagName('tr')[0];
+					const body = document.getElementById('body')
+
+		
+					// Split the first row by comma to get column names
+					const columnNames = rows[0].split(',');
+		
+					// Create table header based on column names
+					columnNames.forEach(columnName => {
+						if (columnName != "Name" && columnName != "TmFull" && columnName != "Tm") {
+							const th = document.createElement('th');
+							th.textContent = columnName;
+							headerRow.appendChild(th);
+							headerRow.classList.add('alert');
+						}
+					});
+
+					const NUM_ROWS = 10
+					for (let i = 1; i <= NUM_ROWS; i++) {
+						const rowData = rows[i].split(',');
+						// Create table row
+						const row = document.createElement('tr');
+
+						// Create name cell
+						const nameCell = document.createElement('td');
+						nameCell.classList.add('d-flex', 'align-items-center');
+						const playerName = rowData[1].trim().split(/\s+/)[1];
+						nameCell.innerHTML = `
+						<div class="img" style="background-image: url(images/${playerName}.jpg);"></div>
+						<div class="pl-3 email">
+							<span>${rowData[1]}</span>
+							<span>${rowData[3]}</span>
+						</div>`;
+						row.appendChild(nameCell);
+
+						for (let j = 0; j < rowData.length; j++) {
+							// Skip columns 2-4
+							if (j == 1 || j == 3 || j == 4) {
+								continue;
+							}
+
+							// Create table cell
+							const cell = document.createElement('td');
+
+							// If first column, put the row number
+							if (j === 0) {
+								cell.textContent = i;
+							} else {
+								// Otherwise, put the data from CSV
+								cell.textContent = rowData[j];
+							}
+
+							// Append cell to row
+							row.appendChild(cell);
+						}
+
+						// Append row to table body
+						body.appendChild(row);
+					}
+				})
+				.catch(error => console.error('Error fetching CSV file:', error));
+		});
+		</script>
 
 	<script src="js/jquery.min.js"></script>
   <script src="js/popper.js"></script>

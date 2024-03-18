@@ -22,6 +22,21 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Select Year
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="#" data-year="2021">2021</a>
+							<a class="dropdown-item" href="#" data-year="2022">2022</a>
+							<a class="dropdown-item" href="#" data-year="2023">2023</a>
+							<a class="dropdown-item" href="#" data-year="2024">2024</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
 					<div class="table-wrap">
 						<table class="table table-responsive-xl" id="table">
 						  <thead id="header">
@@ -38,10 +53,23 @@
 			</div>
 		</div>
 	</section>
-
+	<script src="js/jquery.min.js"></script>
+	<script src="js/popper.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/main.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			fetch('years/2023.csv')
+	$(document).ready(function() {
+		let headersLoaded = false;
+		loadTable('2022') 	// default
+		$('.dropdown-item').click(function() {
+			const selectedYear = $(this).data('year');
+			$('.dropdown-item').removeClass('active'); // Remove active class from all items
+        	$(this).addClass('active'); // Add active class to the selected item
+			loadTable(selectedYear);
+    });
+
+    function loadTable(year) {
+			fetch(`years/${year}.csv`)
 				.then(response => response.text())
 				.then(csvData => {
 					// Split CSV data by newline character to get rows
@@ -56,14 +84,19 @@
 					const columnNames = rows[0].split(',');
 		
 					// Create table header based on column names
-					columnNames.forEach(columnName => {
-						if (columnName != "Name" && columnName != "TmFull" && columnName != "Tm") {
-							const th = document.createElement('th');
-							th.textContent = columnName;
-							headerRow.appendChild(th);
-							headerRow.classList.add('alert');
-						}
-					});
+					if (!headersLoaded) {
+						columnNames.forEach(columnName => {
+							if (columnName != "Name" && columnName != "TmFull" && columnName != "Tm") {
+								const th = document.createElement('th');
+								th.textContent = columnName;
+								headerRow.appendChild(th);
+								headerRow.classList.add('alert');
+							}
+						});
+						headersLoaded = true;
+					}
+					const tbody = document.getElementById('body');
+            		tbody.innerHTML = ''; // Clear previous data
 
 					const NUM_ROWS = 10
 					for (let i = 1; i <= NUM_ROWS; i++) {
@@ -99,6 +132,14 @@
 								// Otherwise, put the data from CSV
 								cell.textContent = rowData[j];
 							}
+							if (j === rowData.length - 3) {
+								const hue = 100 - (parseFloat(rowData[j]) * 100); // Map proportion to hue (light green to dark green)
+        						const color = `hsl(120, 50%, ${hue}%)`; // Convert hue to HSL color format
+                            	cell.style.backgroundColor = color; // Bootstrap success background color
+                            	cell.style.color = '#fff'; // Bootstrap white text color
+                            	cell.style.fontWeight = 'bold'; // Bootstrap bold text
+                            	cell.style.textAlign = 'center'; // Bootstrap center text
+                        	}
 
 							// Append cell to row
 							row.appendChild(cell);
@@ -109,13 +150,9 @@
 					}
 				})
 				.catch(error => console.error('Error fetching CSV file:', error));
-		});
+		}
+	});
 		</script>
-
-	<script src="js/jquery.min.js"></script>
-  <script src="js/popper.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/main.js"></script>
 
 	</body>
 </html>

@@ -2698,9 +2698,15 @@ input[type="button"].btn-block {
     text-decoration: none;
     background-color: #f8f9fa; }
   .dropdown-item.active, .dropdown-item:active {
+    background-color: #007bff;
     color: #fff;
     text-decoration: none;
     background-color: #007bff; }
+    .dropdown-item.active::before {
+      content: "\2713"; /* Checkmark icon */
+      float: right;
+      margin-right: 10px;
+  }
   .dropdown-item.disabled, .dropdown-item:disabled {
     color: #6c757d;
     pointer-events: none;

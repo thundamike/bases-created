@@ -27,10 +27,10 @@
 							Select Year
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#" year="2021">2021</a>
-							<a class="dropdown-item" href="#" year="2022">2022</a>
-							<a class="dropdown-item" href="#" year="2023">2023</a>
-							<a class="dropdown-item" href="#" year="2024">2024</a>
+							<a class="dropdown-item" href="#" data-year="2021">2021</a>
+							<a class="dropdown-item" href="#" data-year="2022">2022</a>
+							<a class="dropdown-item" href="#" data-year="2023">2023</a>
+							<a class="dropdown-item" href="#" data-year="2024">2024</a>
 						</div>
 					</div>
 				</div>
@@ -72,18 +72,10 @@
 			fetch(`years/${year}.csv`)
 				.then(response => response.text())
 				.then(csvData => {
-					// Split CSV data by newline character to get rows
 					const rows = csvData.split('\n');
-					
-					// Get the table header
-					const headerRow = document.getElementById('header').getElementsByTagName('tr')[0];
+										const headerRow = document.getElementById('header').getElementsByTagName('tr')[0];
 					const body = document.getElementById('body')
-
-		
-					// Split the first row by comma to get column names
 					const columnNames = rows[0].split(',');
-		
-					// Create table header based on column names
 					if (!headersLoaded) {
 						columnNames.forEach(columnName => {
 							if (columnName != "Name" && columnName != "TmFull" && columnName != "Tm") {
@@ -100,11 +92,9 @@
 
 					const NUM_ROWS = 10
 					for (let i = 1; i <= NUM_ROWS; i++) {
+						console.log(rows)
 						const rowData = rows[i].split(',');
-						// Create table row
 						const row = document.createElement('tr');
-
-						// Create name cell
 						const nameCell = document.createElement('td');
 						nameCell.classList.add('d-flex', 'align-items-center');
 						const playerName = rowData[1].trim().split(/\s+/)[1];
@@ -133,19 +123,17 @@
 								cell.textContent = rowData[j];
 							}
 							if (j === rowData.length - 3) {
-								const hue = 100 - (parseFloat(rowData[j]) * 100); // Map proportion to hue (light green to dark green)
-        						const color = `hsl(120, 50%, ${hue}%)`; // Convert hue to HSL color format
-                            	cell.style.backgroundColor = color; // Bootstrap success background color
-                            	cell.style.color = '#fff'; // Bootstrap white text color
-                            	cell.style.fontWeight = 'bold'; // Bootstrap bold text
-                            	cell.style.textAlign = 'center'; // Bootstrap center text
+								const hue = 100 - (parseFloat(rowData[j]) * 100);
+        						const color = `hsl(120, 50%, ${hue}%)`; 
+                            	cell.style.backgroundColor = color; 
+                            	cell.style.color = '#fff';
+                            	cell.style.fontWeight = 'bold';
+                            	cell.style.textAlign = 'center';
                         	}
 
-							// Append cell to row
 							row.appendChild(cell);
 						}
 
-						// Append row to table body
 						body.appendChild(row);
 					}
 				})
